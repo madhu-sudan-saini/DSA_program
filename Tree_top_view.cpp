@@ -1,0 +1,86 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<map>
+#include<stack>
+using namespace std;
+
+class Node
+{
+    public:
+
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int d)
+    {
+        data=d;
+        left=NULL;
+        right=NULL;
+    }
+};
+
+
+static int idx= -1;
+Node* builtTree(vector<int> &Preorder)
+{
+    idx++;
+
+    if(idx >= Preorder.size() || Preorder[idx]==-1)
+    {
+        return NULL;
+    }
+
+    Node* root=new Node(Preorder[idx]);
+    root->left=builtTree(Preorder);
+    root->right=builtTree(Preorder);
+
+    return root;
+}
+void topview(Node* root)
+{
+    queue<pair<Node* ,int>> q;
+    map<int,int> m;
+
+    q.push({root,0});
+
+    while(!q.empty())
+    {
+        Node* curr=q.front().first;
+        int hd=q.front().second;
+        q.pop();
+
+        if(m.find(hd)==m.end())
+        {
+            m[hd]=curr->data;
+        }
+
+        if(curr->left !=NULL)
+        {
+            q.push({curr->left,hd-1});
+        }
+
+        if(curr->right !=NULL)
+        {
+            q.push({curr->right,hd+1});
+        }
+    }
+
+    cout << "Top View: ";
+
+    for(auto val : m)
+    {
+        cout<<val.second<<" ";
+    }
+    cout<<endl;
+    
+}
+int main()
+{
+    vector<int> Preorder={1,2,4,-1,-1,5,-1,-1,3,6,-1,-1,7,-1,-1};
+
+    Node* root=builtTree(Preorder);
+
+  topview(root);
+}
